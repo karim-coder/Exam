@@ -1,20 +1,19 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { createStore, combineReducers } from "redux";
+import { Provider } from "react-redux";
+import ExamNavigator from "./navigation/ExamNavigator";
+import { Provider as AuthProvider } from "./context/AuthContext";
+// import authReducer from "./store/reducers/auth";
 
-export default function App() {
+// const rootReducer = combineReducers({
+//   auth: authReducer,
+// });
+
+// const store = createStore(rootReducer);
+
+export default () => {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <AuthProvider>
+      <ExamNavigator />
+    </AuthProvider>
   );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+};
