@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AuthForm from "../components/AuthForm";
 import axios from "axios";
+import Colors from "../constants/Colors";
 
 const SignupScreen = (props) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -10,7 +11,7 @@ const SignupScreen = (props) => {
   return (
     <View style={styles.container}>
       <AuthForm
-        headerText="Sign Up for Movies"
+        headerText="Sign Up"
         submitButtonText="Sign Up"
         errorMessage={errorMessage}
         navLinkText="Already have and account? Sign in instead!"
@@ -42,10 +43,14 @@ const SignupScreen = (props) => {
 
 SignupScreen.navigationOptions = () => {
   return {
-    headerShown: false,
+    headerLeft: () => null,
+    title: "Sign Up",
+    headerStyle: {
+      backgroundColor: Colors.primary,
+    },
+    headerTintColor: "white",
   };
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

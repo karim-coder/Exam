@@ -1,37 +1,6 @@
 export const SIGN_IN = "SIGN_IN";
 export const LOGIN = "LOGIN";
 
-// export const signIn = (email, password) => {
-//   return {
-//     type: SIGN_IN,
-//     userData: {
-//       email,
-//       password,
-//     },
-//   };
-// };
-
-// export const signUp = (
-//   email,
-//   name,
-//   phone,
-//   photo,
-//   password,
-//   confirmPassword
-// ) => {
-//   return {
-//     type: SIGN_UP,
-//     userData: {
-//       email,
-//       name,
-//       phone,
-//       photo,
-//       password,
-//       confirmPassword,
-//     },
-//   };
-// };
-
 export const signup = (email, name, phone, password, confirmPassword) => {
   return async (dispatch) => {
     try {

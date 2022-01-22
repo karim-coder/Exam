@@ -1,6 +1,5 @@
-import { createAppContainer } from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-import { createBottomTabNavigator } from "react-navigation-tabs";
 
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
@@ -16,9 +15,11 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ExamScreen from "../screens/ExamScreen";
 import Colors from "../constants/Colors";
+
 const loginFlow = createStackNavigator(
   {
     ResolveAuth: ResolveAuthScreen,
+    // Auth: AuthScreen,
     Signin: SigninScreen,
     Signup: SignupScreen,
     ConfirmEmail: EmailConfirmationScreen,
@@ -40,7 +41,7 @@ const Home = createStackNavigator(
         <Ionicons
           name="home"
           size={tabInfo.focused ? 26 : 20}
-          color={tabInfo.focused ? "white" : Colors.accent}
+          color={tabInfo.focused ? "white" : "#ccc"}
         />
       ),
     },
@@ -57,7 +58,7 @@ const Exam = createStackNavigator(
         <FontAwesome
           name="pencil-square-o"
           size={tabInfo.focused ? 26 : 20}
-          color={tabInfo.focused ? "white" : Colors.accent}
+          color={tabInfo.focused ? "white" : "#ccc"}
         />
       ),
     },
@@ -74,7 +75,7 @@ const Profile = createStackNavigator(
         <AntDesign
           name="profile"
           size={tabInfo.focused ? 26 : 20}
-          color={tabInfo.focused ? "white" : Colors.accent}
+          color={tabInfo.focused ? "white" : "#ccc"}
         />
       ),
     },

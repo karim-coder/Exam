@@ -6,13 +6,9 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const EmailConfirmationScreen = (props) => {
   const { state } = props.navigation;
   const emailVerification = state.params.emailCode;
-  const email = "aaa@aa.com";
-  const password = "123";
-  console.log(state);
+
   const [status, setStatus] = useState("");
   const [code, setCode] = useState("");
-
-  const [verified, setVerified] = useState(false);
 
   return (
     <View>
@@ -36,6 +32,7 @@ const EmailConfirmationScreen = (props) => {
               if (response.data.status === 200) {
                 AsyncStorage.setItem("token", response.data.data.token);
                 AsyncStorage.setItem("id", response.data.data.id);
+                alert("Email verified successfully!");
                 props.navigation.navigate("Home");
               } else {
                 setStatus(response.data.data);

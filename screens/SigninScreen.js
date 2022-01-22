@@ -4,11 +4,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSelector, useDispatch } from "react-redux";
 import AuthForm from "../components/AuthForm";
 import axios from "axios";
-import { Context } from "../context/AuthContext";
+import Colors from "../constants/Colors";
 
 const SigninScreen = (props) => {
   // const user = useSelector(state => state.)
-  const { state, signin, clearErrorMessage } = useContext(Context);
 
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -46,8 +45,15 @@ const SigninScreen = (props) => {
   );
 };
 
-SigninScreen.navigationOptions = {
-  headerLeft: () => null,
+SigninScreen.navigationOptions = () => {
+  return {
+    headerLeft: () => null,
+    title: "Sign In",
+    headerStyle: {
+      backgroundColor: Colors.primary,
+    },
+    headerTintColor: "white",
+  };
 };
 
 const styles = StyleSheet.create({

@@ -1,28 +1,21 @@
 import React from "react";
-import { Text, View, StyleSheet } from "react-native";
-import Colors from "../constants/Colors";
+import { View, StyleSheet } from "react-native";
 
 const Card = (props) => {
   return (
-    <View style={styles.card}>
-      <Text style={styles.name}>{props.name}</Text>
-    </View>
+    <View style={{ ...styles.card, ...props.style }}>{props.children}</View>
   );
 };
 
 const styles = StyleSheet.create({
   card: {
-    width: "100%",
-    height: 100,
-    backgroundColor: "purple",
-    margin: 10,
-    alignItems: "center",
-    color: "white",
-  },
-  name: {
-    color: "white",
-    textAlign: "center",
-    alignItems: "center",
+    shadowColor: "black",
+    shadowOpacity: 0.26,
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 8,
+    elevation: 5,
+    borderRadius: 10,
+    backgroundColor: "white",
   },
 });
 

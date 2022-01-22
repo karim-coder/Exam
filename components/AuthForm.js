@@ -4,15 +4,13 @@ import {
   View,
   KeyboardAvoidingView,
   Platform,
-  TouchableWithoutFeedback,
-  Keyboard,
-  TextInput,
-  SafeAreaView,
+  ScrollView,
 } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
 import { Text, Button, Input } from "react-native-elements";
-// import { SafeAreaView } from "react-native-safe-area-context";
 import Icon from "react-native-vector-icons/FontAwesome";
 import NavLink from "./NavLink";
+import Card from "./Card";
 
 const AuthForm = ({
   headerText,
@@ -101,107 +99,86 @@ const AuthForm = ({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
+      keyboardVerticalOffset={50}
+      style={styles.screen}
     >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.form}>
-          <Text style={{ textAlign: "center", top: -30 }} h4>
-            {headerText}
-          </Text>
-
-          <Input
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
-            autoCapitalize="none"
-            autoCorrect={false}
-            returnKeyType="next"
-            keyboardType="default"
-            leftIcon={
-              <Icon
-                name="envelope"
-                style={{ marginRight: 10 }}
-                size={24}
-                color="gray"
-              />
-            }
-            errorMessage={emailError}
-            autoCapitalize="none"
-            autoCorrect={false}
-          />
-
-          {submitButtonText === "Sign Up" && (
-            <>
-              <Input
-                placeholder="Name"
-                value={name}
-                onChangeText={setName}
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="next"
-                keyboardType="default"
-                // onEndEditing={errorHandler}
-                onChangeText={setName}
-                leftIcon={
-                  <Icon
-                    name="user"
-                    style={{ marginRight: 10 }}
-                    size={24}
-                    color="gray"
-                  />
-                }
-                errorMessage={nameError}
-                autoCorrect={false}
-              />
-
-              <Input
-                placeholder="Phone no"
-                keyboardType="decimal-pad"
-                value={phone}
-                onChangeText={setPhone}
-                autoCapitalize="none"
-                autoCorrect={false}
-                returnKeyType="next"
-                leftIcon={
-                  <Icon
-                    name="phone"
-                    style={{ marginRight: 10 }}
-                    size={24}
-                    color="gray"
-                  />
-                }
-                errorStyle={{ color: "red" }}
-                errorMessage={phoneError}
-                autoCorrect={false}
-              />
-            </>
-          )}
-
-          <Input
-            placeholder="Password"
-            value={password}
-            onChangeText={setPassword}
-            autoCapitalize="none"
-            returnKeyType="next"
-            keyboardType="default"
-            autoCorrect={false}
-            leftIcon={
-              <Icon
-                name="lock"
-                style={{ marginRight: 10 }}
-                size={24}
-                color="gray"
-              />
-            }
-            secureTextEntry
-            errorStyle={{ color: "red" }}
-            errorMessage={passwordError}
-            autoCorrect={false}
-          />
-          {submitButtonText === "Sign Up" && (
+      <LinearGradient colors={["white", "white"]} style={styles.gradient}>
+        {/* <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}> */}
+        <Card style={styles.authContainer}>
+          <ScrollView>
             <Input
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChangeText={setConfirmPassword}
+              placeholder="Email"
+              value={email}
+              onChangeText={setEmail}
+              autoCapitalize="none"
+              autoCorrect={false}
+              returnKeyType="next"
+              keyboardType="default"
+              leftIcon={
+                <Icon
+                  name="envelope"
+                  style={{ marginRight: 10 }}
+                  size={24}
+                  color="gray"
+                />
+              }
+              errorMessage={emailError}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+
+            {submitButtonText === "Sign Up" && (
+              <>
+                <Input
+                  placeholder="Name"
+                  value={name}
+                  onChangeText={setName}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                  keyboardType="default"
+                  onChangeText={setName}
+                  leftIcon={
+                    <Icon
+                      name="user"
+                      style={{ marginRight: 10 }}
+                      size={24}
+                      color="gray"
+                    />
+                  }
+                  errorMessage={nameError}
+                  autoCorrect={false}
+                />
+
+                <Input
+                  placeholder="Phone no"
+                  keyboardType="decimal-pad"
+                  value={phone}
+                  onChangeText={setPhone}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                  returnKeyType="next"
+                  leftIcon={
+                    <Icon
+                      name="phone"
+                      style={{ marginRight: 10 }}
+                      size={24}
+                      color="gray"
+                    />
+                  }
+                  errorStyle={{ color: "red" }}
+                  errorMessage={phoneError}
+                  autoCorrect={false}
+                />
+              </>
+            )}
+
+            <Input
+              placeholder="Password"
+              value={password}
+              onChangeText={setPassword}
+              autoCapitalize="none"
+              returnKeyType="next"
               keyboardType="default"
               autoCorrect={false}
               leftIcon={
@@ -215,21 +192,43 @@ const AuthForm = ({
               secureTextEntry
               errorStyle={{ color: "red" }}
               errorMessage={passwordError}
-              autoCapitalize="none"
               autoCorrect={false}
             />
-          )}
-          {errorMessage ? (
-            <Text style={styles.errorMessage}>{errorMessage}</Text>
-          ) : null}
-          {submitButtonText === "Sign Up" ? (
-            <Button title={submitButtonText} onPress={SignUpHandler} />
-          ) : (
-            <Button title={submitButtonText} onPress={SignInHandler} />
-          )}
-          <NavLink text={navLinkText} routName={routName} />
-        </View>
-      </TouchableWithoutFeedback>
+            {submitButtonText === "Sign Up" && (
+              <Input
+                placeholder="Confirm Password"
+                value={confirmPassword}
+                onChangeText={setConfirmPassword}
+                keyboardType="default"
+                autoCorrect={false}
+                leftIcon={
+                  <Icon
+                    name="lock"
+                    style={{ marginRight: 10 }}
+                    size={24}
+                    color="gray"
+                  />
+                }
+                secureTextEntry
+                errorStyle={{ color: "red" }}
+                errorMessage={passwordError}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            )}
+            {errorMessage ? (
+              <Text style={styles.errorMessage}>{errorMessage}</Text>
+            ) : null}
+            {submitButtonText === "Sign Up" ? (
+              <Button title={submitButtonText} onPress={SignUpHandler} />
+            ) : (
+              <Button title={submitButtonText} onPress={SignInHandler} />
+            )}
+            <NavLink text={navLinkText} routName={routName} />
+          </ScrollView>
+        </Card>
+        {/* </View> */}
+      </LinearGradient>
     </KeyboardAvoidingView>
   );
 };
@@ -251,6 +250,20 @@ const styles = StyleSheet.create({
   },
   form: {
     margin: 20,
+  },
+  authContainer: {
+    width: "80%",
+    maxWidth: 400,
+    maxHeight: 800,
+    padding: 20,
+  },
+  gradient: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  screen: {
+    flex: 1,
   },
 });
 

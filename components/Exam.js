@@ -10,7 +10,9 @@ const Exam = (props) => {
       {props.data[props.title].map((exam, i) => (
         <View key={i}>
           {i === 0 ? <Text style={styles.name}>{exam.cate.name}</Text> : null}
-          <Card name={exam.Exam.name} />
+          <Card style={{ marginVertical: 10, padding: 20 }}>
+            <Text>{exam.Exam.name}</Text>
+          </Card>
         </View>
       ))}
     </View>

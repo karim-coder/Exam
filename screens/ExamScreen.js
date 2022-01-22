@@ -6,25 +6,33 @@ import {
   StyleSheet,
   FlatList,
   useWindowDimensions,
+  Button,
 } from "react-native";
 import Colors from "../constants/Colors";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHtml from "react-native-render-html";
+import RadioButtonRN from "radio-buttons-react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
+import { FontAwesome } from "@expo/vector-icons";
 
 const tagsStyles = {
   body: {
     whiteSpace: "normal",
     color: "gray",
   },
-  a: {
-    color: "green",
+  p: {
+    flexDirection: "row",
+    padding: 0,
+    margin: 0,
   },
 };
 
 const ExamScreen = () => {
   const [data, setData] = useState([]);
   const { width } = useWindowDimensions();
+  const [mark, setMark] = useState(0);
+  const [answered, setAnswered] = useState(false);
 
   useEffect(async () => {
     await axios
@@ -47,8 +55,9 @@ const ExamScreen = () => {
       .catch((error) => console.error(error))
       .finally(() => {});
   }, []);
+  var marks = [];
 
-  console.log(data.exam);
+  // console.log(data.exam);
   return (
     <View>
       <FlatList
@@ -56,55 +65,69 @@ const ExamScreen = () => {
         keyExtractor={(item) => item.ExamStat.id}
         renderItem={({ item, index }) => (
           <View style={styles.cartItem}>
-            <Text>Q){index + 1}</Text>
-            <RenderHtml
-              contentWidth={width}
-              source={{ html: item.Question.question.above }}
-              tagsStyles={tagsStyles}
+            <Text>
+              <Text style={{ fontWeight: "bold" }}>Q){index + 1} </Text>
+              {item.Question.question.above.replace(/<[^>]+>/g, "").trim()}
+            </Text>
+            <RadioButtonRN
+              data={[
+                {
+                  label: item.Question.option1.replace(/<[^>]+>/g, "").trim(),
+                  index: 1,
+                },
+                {
+                  label: item.Question.option2.replace(/<[^>]+>/g, "").trim(),
+                  index: 2,
+                },
+                {
+                  label: item.Question.option3.replace(/<[^>]+>/g, "").trim(),
+                  index: 3,
+                },
+                {
+                  label: item.Question.option4.replace(/<[^>]+>/g, "").trim(),
+                  index: 4,
+                },
+                ...(item.Question.option5 != null && item.Question.option5 != ""
+                  ? {
+                      label: item.Question.option5
+                        .replace(/<[^>]+>/g, "")
+                        .trim(),
+                      index: 4,
+                    }
+                  : []),
+                ...(item.Question.option6 != null && item.Question.option6 != ""
+                  ? {
+                      label: item.Question.option6
+                        .replace(/<[^>]+>/g, "")
+                        .trim(),
+                      index: 4,
+                    }
+                  : []),
+                ...(item.Question.option6 != null && item.Question.option6 != ""
+                  ? {
+                      label: item.Question.option6
+                        .replace(/<[^>]+>/g, "")
+                        .trim(),
+                      index: 4,
+                    }
+                  : []),
+              ]}
+              selectedBtn={(e) => {
+                if (e.index === parseFloat(item.Question.answer)) {
+                  marks[index] = parseFloat(item.Question.marks);
+                } else {
+                  marks[index] = -parseFloat(item.Question.negative_marks);
+                }
+                var sum = 0;
+                marks.forEach((x) => {
+                  if (x) {
+                    sum += x;
+                  }
+                });
+                console.log({ Total_Mark: sum });
+              }}
+              icon={<FontAwesome name="circle-o" size={25} color="#2c9dd1" />}
             />
-            <View style={{ flexDirection: "row" }}>
-              <Text style={{ marginTop: 10 }}>A)</Text>
-              <Text>
-                {item.Question.option1 != null &&
-                  item.Question.option1 != "" && (
-                    <RenderHtml
-                      contentWidth={width}
-                      source={{ html: item.Question.option1 }}
-                    />
-                  )}
-              </Text>
-            </View>
-
-            {item.Question.option2 != null && item.Question.option2 != "" && (
-              <RenderHtml
-                contentWidth={width}
-                source={{ html: item.Question.option2 }}
-              />
-            )}
-            {item.Question.option3 != null && item.Question.option3 != "" && (
-              <RenderHtml
-                contentWidth={width}
-                source={{ html: item.Question.option3 }}
-              />
-            )}
-            {item.Question.option4 != null && item.Question.option4 != "" && (
-              <RenderHtml
-                contentWidth={width}
-                source={{ html: item.Question.option4 }}
-              />
-            )}
-            {item.Question.option5 != null && item.Question.option5 != "" && (
-              <RenderHtml
-                contentWidth={width}
-                source={{ html: item.Question.option5 }}
-              />
-            )}
-            {item.Question.option6 != null && item.Question.option6 != "" && (
-              <RenderHtml
-                contentWidth={width}
-                source={{ html: item.Question.option6 }}
-              />
-            )}
 
             <Text style={{ fontWeight: "bold" }}>Correct answer</Text>
             <RenderHtml
@@ -116,6 +139,11 @@ const ExamScreen = () => {
               source={{ html: item.Question.explanation }}
             />
           </View>
+        )}
+        ListFooterComponent={() => (
+          <Text style={{ margin: 20, textAlign: "center" }}>
+            <Button title="Finish Exam" />
+          </Text>
         )}
       />
     </View>
