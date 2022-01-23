@@ -27,12 +27,15 @@ const tagsStyles = {
     margin: 0,
   },
 };
+let s;
 
-const ExamScreen = () => {
+const ExamScreen = (props) => {
+  var arrayUniqueByKey = [];
   const [data, setData] = useState([]);
   const { width } = useWindowDimensions();
   const [mark, setMark] = useState(0);
   const [answered, setAnswered] = useState(false);
+  const [marks, setMarks] = useState([]);
 
   useEffect(async () => {
     await axios
@@ -55,9 +58,42 @@ const ExamScreen = () => {
       .catch((error) => console.error(error))
       .finally(() => {});
   }, []);
-  var marks = [];
 
-  // console.log(data.exam);
+  const addData = (e, item) => {
+    let a = [...marks];
+
+    if (e.index === parseFloat(item.Question.answer)) {
+      a.push({ id: item.ExamStat.id, mark: parseFloat(item.Question.marks) });
+      setMarks(a);
+    } else {
+      a.push({
+        id: item.ExamStat.id,
+        mark: -parseFloat(item.Question.negative_marks),
+      });
+      setMarks(a);
+    }
+    const key = "id";
+    arrayUniqueByKey = [
+      ...new Map(a.map((item) => [item[key], item])).values(),
+    ];
+    setMarks(arrayUniqueByKey);
+    var sum = 0;
+    arrayUniqueByKey.forEach((x) => {
+      if (x) {
+        sum += x.mark;
+      }
+    });
+    // console.log({ Total_Mark: sum });
+    // console.log(marks);
+    setMark(sum);
+    // console.log(arrayUniqueByKey);
+  };
+
+  useEffect(() => {
+    addData;
+  }, []);
+
+  console.log(data.exam);
   return (
     <View>
       <FlatList
@@ -112,20 +148,7 @@ const ExamScreen = () => {
                     }
                   : []),
               ]}
-              selectedBtn={(e) => {
-                if (e.index === parseFloat(item.Question.answer)) {
-                  marks[index] = parseFloat(item.Question.marks);
-                } else {
-                  marks[index] = -parseFloat(item.Question.negative_marks);
-                }
-                var sum = 0;
-                marks.forEach((x) => {
-                  if (x) {
-                    sum += x;
-                  }
-                });
-                console.log({ Total_Mark: sum });
-              }}
+              selectedBtn={(e) => addData(e, item)}
               icon={<FontAwesome name="circle-o" size={25} color="#2c9dd1" />}
             />
 
@@ -134,15 +157,18 @@ const ExamScreen = () => {
               contentWidth={width}
               source={{ html: item.Question.answer }}
             />
-            <RenderHtml
-              contentWidth={width}
-              source={{ html: item.Question.explanation }}
-            />
           </View>
         )}
         ListFooterComponent={() => (
           <Text style={{ margin: 20, textAlign: "center" }}>
-            <Button title="Finish Exam" />
+            <Button
+              title="Finish Exam"
+              onPress={() => {
+                props.navigation.navigate("FinishExam", {
+                  mark: mark,
+                });
+              }}
+            />
           </Text>
         )}
       />

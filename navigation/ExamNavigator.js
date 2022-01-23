@@ -15,6 +15,8 @@ import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ExamScreen from "../screens/ExamScreen";
 import Colors from "../constants/Colors";
+import FinishExamScreen from "../screens/FinishExamScreen";
+import StartExam from "../screens/StartExam";
 
 const loginFlow = createStackNavigator(
   {
@@ -27,6 +29,19 @@ const loginFlow = createStackNavigator(
   {
     navigationOptions: {
       headerShown: false,
+    },
+  }
+);
+
+const Finish = createStackNavigator(
+  {
+    Exam: ExamScreen,
+    FinishExam: FinishExamScreen,
+  },
+  {
+    navigationOptions: {
+      headerShown: false,
+      headerLeft: () => null,
     },
   }
 );
@@ -48,9 +63,10 @@ const Home = createStackNavigator(
   }
 );
 
-const Exam = createStackNavigator(
+const Start = createStackNavigator(
   {
-    Exam: ExamScreen,
+    Start: StartExam,
+    Finish,
   },
   {
     navigationOptions: {
@@ -61,6 +77,7 @@ const Exam = createStackNavigator(
           color={tabInfo.focused ? "white" : "#ccc"}
         />
       ),
+      headerShown: false,
     },
   }
 );
@@ -81,10 +98,11 @@ const Profile = createStackNavigator(
     },
   }
 );
+
 const main = createMaterialBottomTabNavigator(
   {
     Home,
-    Exam,
+    Start,
     Profile,
   },
   {
