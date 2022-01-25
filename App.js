@@ -1,19 +1,30 @@
-import { createStore, combineReducers } from "redux";
-import { Provider } from "react-redux";
 import ExamNavigator from "./navigation/ExamNavigator";
-import { Provider as AuthProvider } from "./context/AuthContext";
-// import authReducer from "./store/reducers/auth";
+import { Provider } from "react-redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
+import ReduxThunk from "redux-thunk";
+import authReducer from "./store/reducers/auth";
+import questionsReducer from "./store/reducers/questions";
+import examsReducer from "./store/reducers/exams";
+import profileReducer from "./store/reducers/profile";
 
-// const rootReducer = combineReducers({
-//   auth: authReducer,
-// });
+import { LogBox } from "react-native";
 
-// const store = createStore(rootReducer);
+LogBox.ignoreLogs([
+  "[react-native-gesture-handler] Seems like you're using an old API with gesture components, check out new Gestures system!",
+]);
+
+const rootReducer = combineReducers({
+  auth: authReducer,
+  questions: questionsReducer,
+  exams: examsReducer,
+  profile: profileReducer,
+});
+const store = createStore(rootReducer, applyMiddleware(ReduxThunk));
 
 export default () => {
   return (
-    <AuthProvider>
+    <Provider store={store}>
       <ExamNavigator />
-    </AuthProvider>
+    </Provider>
   );
 };

@@ -6,8 +6,18 @@ const FinishExamScreen = (props) => {
   const mark = props.navigation.getParam("mark");
   return (
     <View>
-      <Text>Exam Finish Screen</Text>
-      <Text>You scored {mark}</Text>
+      <Text>Exam Finished.</Text>
+      <Text>
+        Your mark is{" "}
+        <Text
+          style={{
+            color: Colors.primary,
+          }}
+        >
+          {" "}
+          {mark}/224
+        </Text>
+      </Text>
     </View>
   );
 };

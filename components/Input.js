@@ -1,5 +1,6 @@
 import React, { useReducer, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
+import Icon from "react-native-vector-icons/FontAwesome";
 
 const INPUT_CHANGE = "INPUT_CHANGE";
 const INPUT_BLUR = "INPUT_BLUR";
@@ -65,14 +66,23 @@ const Input = (props) => {
 
   return (
     <View style={styles.formControl}>
-      <Text style={styles.label}>{props.label}</Text>
-      <TextInput
-        {...props}
-        style={styles.input}
-        value={inputState.value}
-        onChangeText={textChangeHandler}
-        onBlur={lostFocusHandler}
-      />
+      <View style={styles.passwordContainer}>
+        <Icon
+          name={props.iconName}
+          style={{ marginRight: 10 }}
+          size={24}
+          color="gray"
+        />
+        <TextInput
+          {...props}
+          placeholder={props.label}
+          style={styles.input}
+          value={inputState.value}
+          onChangeText={textChangeHandler}
+          onBlur={lostFocusHandler}
+        />
+      </View>
+
       {!inputState.isValid && inputState.touched && (
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{props.errorText}</Text>
@@ -86,23 +96,22 @@ const styles = StyleSheet.create({
   formControl: {
     width: "100%",
   },
-  label: {
-    // fontFamily: "open-sans-bold",
-    marginVertical: 8,
-  },
   input: {
     paddingHorizontal: 2,
-    paddingVertical: 5,
     borderBottomColor: "#ccc",
-    borderBottomWidth: 1,
+    flex: 1,
   },
   errorContainer: {
     marginVertical: 5,
   },
   errorText: {
-    // fontFamily: "open-sans",
     color: "red",
     fontSize: 13,
+  },
+  passwordContainer: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    marginVertical: 5,
   },
 });
 

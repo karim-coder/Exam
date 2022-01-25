@@ -1,59 +1,56 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, FlatList } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
+import {
+  Text,
+  View,
+  StyleSheet,
+  Button,
+  FlatList,
+  ActivityIndicator,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { useSelector, useDispatch } from "react-redux";
 import Exam from "../components/Exam";
 import Colors from "../constants/Colors";
-const HomeScreen = (props) => {
-  const [data, setData] = useState([]);
-  const [isLoading, setLoading] = useState(false);
+import * as examsActions from "../store/actions/exams";
 
-  useEffect(async () => {
-    await axios
-      .post(
-        "https://e-prathibha.com/apis/test_free_exam",
-        {
-          examid: 12,
-          qno: 1,
-        },
-        {
-          headers: {
-            server_key: "3w99V63pW7tJ7vavGXtCKo8cp",
-            tokenu: await AsyncStorage.getItem("token"),
-            id: await AsyncStorage.getItem("id"),
-          },
-        }
-      )
-      .then((response) => {
-        setData(response.data.data);
-        // setData(Object.values(response.data.data.exams[0]));
-        // console.log(Object.keys(response.data.data.exams));
-      })
-      .catch((error) => console.error(error))
-      .finally(() => setLoading(false));
+const HomeScreen = (props) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const data = useSelector((state) => state.exams.exams);
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const getExams = async () => {
+      let action = examsActions.getExams();
+
+      setIsLoading(true);
+      try {
+        await dispatch(action);
+      } catch (err) {
+        setIsLoading(false);
+      }
+    };
+
+    getExams();
   }, []);
-  if (!data) {
-    setLoading(true);
-  }
+
+  // console.log({ Data: data });
+
   const title = [
     "Old question papers UPSC Civils (Pre)",
     "Limited UPSC other than Civils",
     "Limited NCERT",
   ];
 
-  // console.log(data.exams[0]["Old question papers UPSC Civils (Pre)"]);
-  // console.log(data.exams[0]["Old question papers UPSC Civils (Pre)"]);
-  // console.log(Object.keys(data.exams[0]));
-  // console.log(data.exams);
   return (
     <View style={styles.container}>
-      {isLoading ? (
-        <Text>Loading...</Text>
+      {!isLoading ? (
+        <ActivityIndicator size="large" color={Colors.primary} />
       ) : (
         <View style={styles.exams}>
           <FlatList
-            data={data.exams}
+            data={data}
             keyExtractor={(item) => item.total}
             renderItem={({ item, index }) => {
               return (

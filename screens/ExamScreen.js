@@ -7,14 +7,17 @@ import {
   FlatList,
   useWindowDimensions,
   Button,
+  ActivityIndicator,
 } from "react-native";
 import Colors from "../constants/Colors";
 import axios from "axios";
+import { useDispatch } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import RenderHtml from "react-native-render-html";
 import RadioButtonRN from "radio-buttons-react-native";
-import Icon from "react-native-vector-icons/FontAwesome";
+import { useSelector } from "react-redux";
 import { FontAwesome } from "@expo/vector-icons";
+import * as questionAction from "../store/actions/questions";
 
 const tagsStyles = {
   body: {
@@ -31,33 +34,13 @@ let s;
 
 const ExamScreen = (props) => {
   var arrayUniqueByKey = [];
-  const [data, setData] = useState([]);
   const { width } = useWindowDimensions();
   const [mark, setMark] = useState(0);
-  const [answered, setAnswered] = useState(false);
   const [marks, setMarks] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  useEffect(async () => {
-    await axios
-      .post(
-        "https://e-prathibha.com/apis/start_exam_new?examId=12",
-        {
-          id: 12,
-        },
-        {
-          headers: {
-            server_key: "3w99V63pW7tJ7vavGXtCKo8cp",
-            Tokenu: await AsyncStorage.getItem("token"),
-            id: await AsyncStorage.getItem("id"),
-          },
-        }
-      )
-      .then((response) => {
-        setData(response.data.data);
-      })
-      .catch((error) => console.error(error))
-      .finally(() => {});
-  }, []);
+  const questions = useSelector((state) => state.questions.questions);
 
   const addData = (e, item) => {
     let a = [...marks];
@@ -83,21 +66,44 @@ const ExamScreen = (props) => {
         sum += x.mark;
       }
     });
-    // console.log({ Total_Mark: sum });
+    console.log({ Total_Mark: sum });
     // console.log(marks);
     setMark(sum);
     // console.log(arrayUniqueByKey);
   };
 
   useEffect(() => {
+    if (!questions) {
+      setIsLoading(true);
+    } else {
+      setIsLoading(false);
+    }
+  }, [questions]);
+
+  useEffect(() => {
     addData;
   }, []);
 
-  console.log(data.exam);
+  const examFinishHandler = async () => {
+    const action = questionAction.finishExam();
+    setIsLoading(true);
+    try {
+      console.log("Hi");
+      await dispatch(action);
+      props.navigation.navigate("FinishExam", {
+        mark: mark,
+      });
+      console.log(mark);
+    } catch (err) {
+      setIsLoading(false);
+    }
+  };
+
+  // console.log(data.exam);
   return (
     <View>
       <FlatList
-        data={data.exam}
+        data={questions}
         keyExtractor={(item) => item.ExamStat.id}
         renderItem={({ item, index }) => (
           <View style={styles.cartItem}>
@@ -161,14 +167,11 @@ const ExamScreen = (props) => {
         )}
         ListFooterComponent={() => (
           <Text style={{ margin: 20, textAlign: "center" }}>
-            <Button
-              title="Finish Exam"
-              onPress={() => {
-                props.navigation.navigate("FinishExam", {
-                  mark: mark,
-                });
-              }}
-            />
+            {isLoading ? (
+              <ActivityIndicator size="small" color={Colors.primary} />
+            ) : (
+              <Button title="Finish Exam" onPress={examFinishHandler} />
+            )}
           </Text>
         )}
       />

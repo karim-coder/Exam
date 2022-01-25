@@ -1,6 +1,5 @@
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
-
 import { createMaterialBottomTabNavigator } from "react-navigation-material-bottom-tabs";
 
 import ResolveAuthScreen from "../screens/ResolveAuthScreen";
@@ -8,22 +7,21 @@ import { Ionicons } from "@expo/vector-icons";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome } from "@expo/vector-icons";
 
-import SigninScreen from "../screens/SigninScreen";
-import SignupScreen from "../screens/SignupScreen";
 import EmailConfirmationScreen from "../screens/EmailConfirmationScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import ExamScreen from "../screens/ExamScreen";
-import Colors from "../constants/Colors";
 import FinishExamScreen from "../screens/FinishExamScreen";
 import StartExam from "../screens/StartExam";
+import AuthScreen from "../screens/AuthScreen";
+
+const Auth = createStackNavigator({
+  Auth: AuthScreen,
+});
 
 const loginFlow = createStackNavigator(
   {
-    ResolveAuth: ResolveAuthScreen,
-    // Auth: AuthScreen,
-    Signin: SigninScreen,
-    Signup: SignupScreen,
+    Auth: AuthScreen,
     ConfirmEmail: EmailConfirmationScreen,
   },
   {
@@ -77,7 +75,7 @@ const Start = createStackNavigator(
           color={tabInfo.focused ? "white" : "#ccc"}
         />
       ),
-      headerShown: false,
+      // headerShown: false,
     },
   }
 );
@@ -113,7 +111,8 @@ const main = createMaterialBottomTabNavigator(
   }
 );
 
-const examNavigator = createStackNavigator({
+const examNavigator = createSwitchNavigator({
+  ResolveAuth: ResolveAuthScreen,
   loginFlow,
   main,
 });

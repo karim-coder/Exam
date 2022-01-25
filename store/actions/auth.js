@@ -1,50 +1,100 @@
-export const SIGN_IN = "SIGN_IN";
-export const LOGIN = "LOGIN";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export const signup = (email, name, phone, password, confirmPassword) => {
-  return async (dispatch) => {
-    try {
-      const response = await axios.post(
-        "https://e-prathibha.com/apis/register",
-        { email, name, phone, data, password, confirmPassword }
-      );
-      if (response.data.status === 400) {
-        setErrorMessage(response.data.data);
-        return;
-      }
-      console.log(response.data.data);
-      props.navigation.navigate("ConfirmEmail", {
-        emailCode: response.data.data.split(/[, ]+/).pop(),
-      });
-      console.log(response.data.data.split(/[, ]+/).pop());
-      console.log(response.data.data);
-    } catch (err) {
-      console.log(err.message);
-    }
-    dispatch({ type: SIGNUP });
-  };
+export const AUTHENTICATE = "AUTHENTICATE";
+export const LOGOUT = "LOGOUT";
+
+export const authenticate = (token, userId) => {
+  return { type: AUTHENTICATE, userId: userId, token: token };
 };
 
 export const login = (email, password) => {
   return async (dispatch) => {
-    try {
-      const response = await axios.post("https://e-prathibha.com/apis/login", {
-        email,
-        password,
-      });
-      if (response.data.status === 200) {
-        console.log("Hi");
-        AsyncStorage.setItem("token", response.data.data.Token);
-        AsyncStorage.setItem("id", response.data.data.Id);
-        props.navigation.replace("Home");
-        const id = await AsyncStorage.getItem("id");
-        console.log(id);
-      }
-      if (response.data.status === 400) {
-        setErrorMessage(response.data.data);
-      }
-    } catch (err) {
-      console.log(err.message);
+    const response = await fetch("https://e-prathibha.com/apis/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email: email,
+        password: password,
+      }),
+    });
+
+    const resData = await response.json();
+
+    if (resData.status != 200) {
+      let message = resData.data;
+      throw new Error(message);
     }
+
+    dispatch(authenticate(resData.data.Token, resData.data.Id));
+    saveDataToStorage(resData.data.Token, resData.data.Id);
   };
+};
+
+export const signup = (email, name, phone, password, confirmPassword) => {
+  return async (dispatch) => {
+    const response = await fetch("https://e-prathibha.com/apis/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        name,
+        phone,
+        password,
+        confirmPassword,
+      }),
+    });
+    const resData = await response.json();
+
+    if (resData.status != 200) {
+      let message = resData.data;
+      throw new Error(message);
+    }
+
+    console.log(resData);
+
+    return resData;
+  };
+};
+
+const saveDataToStorage = (token, userId) => {
+  AsyncStorage.setItem(
+    "userData",
+    JSON.stringify({
+      token: token,
+      userId: userId,
+    })
+  );
+};
+
+export const emailConfirm = (code) => {
+  return async (dispatch) => {
+    const response = await fetch("https://e-prathibha.com/apis/verifyEmail", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        reg_code: code,
+      }),
+    });
+
+    const resData = await response.json();
+
+    console.log({ resData: resData });
+    if (resData.status != 200) {
+      let message = resData.data;
+      throw new Error(message);
+    }
+    dispatch(authenticate(resData.data.token, resData.data.id));
+    saveDataToStorage(resData.data.token, resData.data.id);
+  };
+};
+
+export const logout = () => {
+  AsyncStorage.removeItem("userData");
+  return { type: LOGOUT };
 };
